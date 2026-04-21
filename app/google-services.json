@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "97654543463",
+    "project_id": "medinear-43f7f",
+    "storage_bucket": "medinear-43f7f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97654543463:android:a66dbc9884db9aad66b0c2",
+        "android_client_info": {
+          "package_name": "com.example.medinear"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXYioMBrylc1Z0hqdthFoJD3n7SMMuZO4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

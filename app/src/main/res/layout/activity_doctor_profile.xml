@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F0F5FF"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- ===== TOP HEADER ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_header_gradient"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingTop="48dp"
+            android:paddingBottom="30dp">
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:text="👨‍⚕️"
+                android:textSize="40sp"
+                android:background="@drawable/bg_avatar_circle_large"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/tv_profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dr. Name"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_profile_specialty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Specialty"
+                android:textColor="#DBEAFE"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <!-- ===== PROFILE FORM ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="16dp"
+            android:padding="20dp"
+            android:background="@drawable/bg_white_card">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👤  Personal Information"
+                android:textColor="#2C6E8A"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Full Name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Full Name"
+                android:textColor="#64748B"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Dr. Full Name"
+                android:background="@drawable/bg_input_field"
+                android:padding="12dp"
+                android:textSize="14sp"
+                android:textColor="#1E293B"
+                android:inputType="textPersonName"
+                android:layout_marginBottom="14dp" />
+
+            <!-- Email -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:textColor="#64748B"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="doctor@email.com"
+                android:background="@drawable/bg_input_field"
+                android:padding="12dp"
+                android:textSize="14sp"
+                android:textColor="#1E293B"
+                android:inputType="textEmailAddress"
+                android:layout_marginBottom="14dp" />
+
+            <!-- Phone -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phone Number"
+                android:textColor="#64748B"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/et_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="+216 XX XXX XXX"
+                android:background="@drawable/bg_input_field"
+                android:padding="12dp"
+                android:textSize="14sp"
+                android:textColor="#1E293B"
+                android:inputType="phone"
+                android:layout_marginBottom="14dp" />
+
+            <!-- Specialty -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Specialty"
+                android:textColor="#64748B"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/et_specialty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="e.g. Dentist, Cardiologist"
+                android:background="@drawable/bg_input_field"
+                android:padding="12dp"
+                android:textSize="14sp"
+                android:textColor="#1E293B"
+                android:inputType="textCapWords"
+                android:layout_marginBottom="14dp" />
+
+            <!-- License Number -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="License Number"
+                android:textColor="#64748B"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/et_license"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="e.g. LIC-12345"
+                android:background="@drawable/bg_input_field"
+                android:padding="12dp"
+                android:textSize="14sp"
+                android:textColor="#1E293B"
+                android:inputType="text"
+                android:layout_marginBottom="6dp" />
+
+        </LinearLayout>
+
+        <!-- ===== SAVE BUTTON ===== -->
+        <TextView
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="💾  Save Profile"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@drawable/bg_button_primary"
+            android:padding="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- ===== LOGOUT BUTTON ===== -->
+        <TextView
+            android:id="@+id/btn_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🚪  Logout"
+            android:textColor="#DC2626"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@drawable/bg_white_card"
+            android:padding="16dp"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
+
+    </LinearLayout>
+</ScrollView>

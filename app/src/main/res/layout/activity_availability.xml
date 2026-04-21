@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F0F5FF"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- ===== TOP HEADER ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_header_gradient"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingTop="48dp"
+            android:paddingBottom="24dp">
+
+            <TextView
+                android:id="@+id/tv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="‹"
+                android:textColor="#FFFFFF"
+                android:textSize="28sp"
+                android:paddingEnd="16dp"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🗓️  Availability"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- ===== WORKING DAYS ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="16dp"
+            android:padding="20dp"
+            android:background="@drawable/bg_white_card">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📅  Working Days"
+                android:textColor="#2C6E8A"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <TextView android:id="@+id/day_mon"
+                    android:layout_width="0dp" android:layout_height="44dp"
+                    android:layout_weight="1" android:gravity="center"
+                    android:text="M" android:textSize="13sp" android:textStyle="bold"
+                    android:textColor="#FFFFFF" android:background="@drawable/bg_day_selected"
+                    android:layout_marginEnd="4dp" android:clickable="true" android:focusable="true"/>
+
+                <TextView android:id="@+id/day_tue"
+                    android:layout_width="0dp" android:layout_height="44dp"
+                    android:layout_weight="1" android:gravity="center"
+                    android:text="T" android:textSize="13sp" android:textStyle="bold"
+                    android:textColor="#FFFFFF" android:background="@drawable/bg_day_selected"
+                    android:layout_marginEnd="4dp" android:clickable="true" android:focusable="true"/>
+
+                <TextView android:id="@+id/day_wed"
+                    android:layout_width="0dp" android:layout_height="44dp"
+                    android:layout_weight="1" android:gravity="center"
+                    android:text="W" android:textSize="13sp" android:textStyle="bold"
+                    android:textColor="#FFFFFF" android:background="@drawable/bg_day_selected"
+                    android:layout_marginEnd="4dp" android:clickable="true" android:focusable="true"/>
+
+                <TextView android:id="@+id/day_thu"
+                    android:layout_width="0dp" android:layout_height="44dp"
+                    android:layout_weight="1" android:gravity="center"
+                    android:text="T" android:textSize="13sp" android:textStyle="bold"
+                    android:textColor="#FFFFFF" android:background="@drawable/bg_day_selected"
+                    android:layout_marginEnd="4dp" android:clickable="true" android:focusable="true"/>
+
+                <TextView android:id="@+id/day_fri"
+                    android:layout_width="0dp" android:layout_height="44dp"
+                    android:layout_weight="1" android:gravity="center"
+                    android:text="F" android:textSize="13sp" android:textStyle="bold"
+                    android:textColor="#FFFFFF" android:background="@drawable/bg_day_selected"
+                    android:layout_marginEnd="4dp" android:clickable="true" android:focusable="true"/>
+
+                <TextView android:id="@+id/day_sat"
+                    android:layout_width="0dp" android:layout_height="44dp"
+                    android:layout_weight="1" android:gravity="center"
+                    android:text="S" android:textSize="13sp" android:textStyle="bold"
+                    android:textColor="#94A3B8" android:background="@drawable/bg_tag_unselected"
+                    android:layout_marginEnd="4dp" android:clickable="true" android:focusable="true"/>
+
+                <TextView android:id="@+id/day_sun"
+                    android:layout_width="0dp" android:layout_height="44dp"
+                    android:layout_weight="1" android:gravity="center"
+                    android:text="S" android:textSize="13sp" android:textStyle="bold"
+                    android:textColor="#94A3B8" android:background="@drawable/bg_tag_unselected"
+                    android:clickable="true" android:focusable="true"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ===== WORKING HOURS ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:padding="20dp"
+            android:background="@drawable/bg_white_card">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⏰  Working Hours"
+                android:textColor="#2C6E8A"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="14dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Start Time"
+                    android:textColor="#64748B"
+                    android:textSize="13sp" />
+
+                <TimePicker
+                    android:id="@+id/tp_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:timePickerMode="spinner" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="End Time"
+                    android:textColor="#64748B"
+                    android:textSize="13sp" />
+
+                <TimePicker
+                    android:id="@+id/tp_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:timePickerMode="spinner" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ===== SLOT DURATION ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:padding="20dp"
+            android:background="@drawable/bg_white_card">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⏱️  Slot Duration"
+                android:textColor="#2C6E8A"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <TextView android:id="@+id/slot_15"
+                    android:layout_width="0dp" android:layout_height="44dp"
+                    android:layout_weight="1" android:gravity="center"
+                    android:text="15 min" android:textSize="13sp" android:textStyle="bold"
+                    android:textColor="#94A3B8" android:background="@drawable/bg_tag_unselected"
+                    android:layout_marginEnd="8dp" android:clickable="true" android:focusable="true"/>
+
+                <TextView android:id="@+id/slot_30"
+                    android:layout_width="0dp" android:layout_height="44dp"
+                    android:layout_weight="1" android:gravity="center"
+                    android:text="30 min" android:textSize="13sp" android:textStyle="bold"
+                    android:textColor="#FFFFFF" android:background="@drawable/bg_day_selected"
+                    android:layout_marginEnd="8dp" android:clickable="true" android:focusable="true"/>
+
+                <TextView android:id="@+id/slot_60"
+                    android:layout_width="0dp" android:layout_height="44dp"
+                    android:layout_weight="1" android:gravity="center"
+                    android:text="60 min" android:textSize="13sp" android:textStyle="bold"
+                    android:textColor="#94A3B8" android:background="@drawable/bg_tag_unselected"
+                    android:clickable="true" android:focusable="true"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ===== GENERATE BUTTON ===== -->
+        <TextView
+            android:id="@+id/btn_generate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⚡  Generate Time Slots"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@drawable/bg_button_primary"
+            android:padding="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- ===== GENERATED SLOTS ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:padding="20dp"
+            android:background="@drawable/bg_white_card">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📋  Generated Slots"
+                android:textColor="#2C6E8A"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_slots"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
+
+    </LinearLayout>
+</ScrollView>

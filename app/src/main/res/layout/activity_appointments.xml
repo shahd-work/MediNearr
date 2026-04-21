@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--list of request-->
+<!--
+    MediNear – Appointment Requests List
+    File: activity_appointments.xml
+    Place in: res/layout/activity_appointments.xml
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F0F5FF">
+
+    <!-- ===== HEADER ===== -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_header_gradient"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="48dp"
+        android:paddingBottom="20dp">
+
+        <!-- Top row: back + title -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="←"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="14dp"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Appointment Requests"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <!-- Filter tabs: All / Pending / Confirmed / Rejected -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:layout_marginTop="16dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/tab_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/bg_tab_selected"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="7dp"
+                    android:paddingBottom="7dp"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <TextView
+                    android:id="@+id/tab_pending"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pending"
+                    android:textColor="#DBEAFE"
+                    android:textSize="13sp"
+                    android:background="@drawable/bg_tab_unselected"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="7dp"
+                    android:paddingBottom="7dp"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <TextView
+                    android:id="@+id/tab_confirmed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirmed"
+                    android:textColor="#DBEAFE"
+                    android:textSize="13sp"
+                    android:background="@drawable/bg_tab_unselected"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="7dp"
+                    android:paddingBottom="7dp"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <TextView
+                    android:id="@+id/tab_rejected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rejected"
+                    android:textColor="#DBEAFE"
+                    android:textSize="13sp"
+                    android:background="@drawable/bg_tab_unselected"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="7dp"
+                    android:paddingBottom="7dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+    </LinearLayout>
+
+    <!-- ===== APPOINTMENT LIST ===== -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_appointments"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp"
+        android:clipToPadding="false"/>
+
+</LinearLayout>
+<!-- screen3 -->
