@@ -10,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AppointmentDetailActivity extends AppCompatActivity {
 
+
     private FirebaseFirestore db;
 
     @Override
