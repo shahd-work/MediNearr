@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Horizontal bar of the cross -->
+    <path
+        android:fillColor="#74B3CE"
+        android:pathData="M8,20 H40 V28 H8 Z" />
+
+    <!-- Vertical bar of the cross -->
+    <path
+        android:fillColor="#74B3CE"
+        android:pathData="M20,8 H28 V40 H20 Z" />
+</vector>

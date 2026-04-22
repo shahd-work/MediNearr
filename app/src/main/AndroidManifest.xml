@@ -2,30 +2,56 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="MediNear"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".AppointmentsActivity"/>
-        <activity android:name=".AppointmentDetailActivity"/>
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Medinear">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+        <!-- ✅ YOUR STARTING SCREEN -->
+        <activity
+            android:name=".RoleSelectionActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+
+        <activity android:name=".LoginActivity"/>
+        <activity android:name=".PatientStep1Activity"/>
+        <activity android:name=".PatientStep2Activity"/>
+        <activity android:name=".PatientStep3Activity"/>
+        <activity android:name=".PatientHomeActivity"/>
+        <activity android:name=".PatientProfileActivity"/>
+        <activity android:name=".DoctorStep1Activity"/>
+        <activity android:name=".DoctorStep2Activity"/>
+        <activity android:name=".DoctorStep3Activity"/>
+        <activity android:name=".DoctorStep4Activity"/>
+        <activity android:name=".DoctorHomeActivity"/>
+        <activity android:name=".BookAppointmentActivity"/>
+        <activity android:name=".MyAppointmentsActivity"/>
+
+        <!-- SHARED -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"/>
+
+        <!-- YOUR FRIEND'S ACTIVITIES -->
+        <activity android:name=".AppointmentsActivity"/>
+        <activity android:name=".AppointmentDetailActivity"/>
         <activity android:name=".DoctorProfileActivity"/>
         <activity android:name=".AvailabilityActivity"/>
+
     </application>
 
 </manifest>
