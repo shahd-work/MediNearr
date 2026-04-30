@@ -5,33 +5,40 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
-
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AvailabilityActivity extends AppCompatActivity {
 
     TextView dayMon, dayTue, dayWed, dayThu, dayFri, daySat, daySun;
-    TextView slot15, slot30, slot60, btnGenerate, tvBack;
+    TextView slot15, slot30, slot60, btnGenerate, btnSave, tvBack;
     TimePicker tpStart, tpEnd;
     RecyclerView rvSlots;
+    FirebaseFirestore db;
+    FirebaseAuth auth;
 
     int selectedSlotDuration = 30;
+    List<String> generatedSlots = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_availability);
 
-        // Back button
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+
         tvBack = findViewById(R.id.tv_back);
         tvBack.setOnClickListener(v -> finish());
 
-        // Days
         dayMon = findViewById(R.id.day_mon);
         dayTue = findViewById(R.id.day_tue);
         dayWed = findViewById(R.id.day_wed);
@@ -48,13 +55,13 @@ public class AvailabilityActivity extends AppCompatActivity {
         setupDayToggle(daySat, false);
         setupDayToggle(daySun, false);
 
-        // Time pickers
         tpStart = findViewById(R.id.tp_start);
-        tpEnd   = findViewById(R.id.tp_end);
-        tpStart.setHour(9);  tpStart.setMinute(0);
-        tpEnd.setHour(17);   tpEnd.setMinute(0);
+        tpEnd = findViewById(R.id.tp_end);
+        tpStart.setHour(9);
+        tpStart.setMinute(0);
+        tpEnd.setHour(17);
+        tpEnd.setMinute(0);
 
-        // Slot duration
         slot15 = findViewById(R.id.slot_15);
         slot30 = findViewById(R.id.slot_30);
         slot60 = findViewById(R.id.slot_60);
@@ -63,13 +70,84 @@ public class AvailabilityActivity extends AppCompatActivity {
         slot30.setOnClickListener(v -> selectSlot(30));
         slot60.setOnClickListener(v -> selectSlot(60));
 
-        // RecyclerView
         rvSlots = findViewById(R.id.rv_slots);
         rvSlots.setLayoutManager(new GridLayoutManager(this, 3));
 
-        // Generate button
         btnGenerate = findViewById(R.id.btn_generate);
         btnGenerate.setOnClickListener(v -> generateSlots());
+
+        btnSave = findViewById(R.id.btn_save);
+        btnSave.setOnClickListener(v -> saveAvailability());
+
+        loadAvailability();
+    }
+
+    private void loadAvailability() {
+        if (auth.getCurrentUser() == null) return;
+        String uid = auth.getCurrentUser().getUid();
+
+        db.collection("users").document(uid).get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        String startTime = doc.getString("startTime");
+                        String endTime = doc.getString("endTime");
+                        String slotDur = doc.getString("slotDuration");
+
+                        if (startTime != null && startTime.contains(":")) {
+                            String[] parts = startTime.split(":");
+                            tpStart.setHour(Integer.parseInt(parts[0]));
+                            tpStart.setMinute(Integer.parseInt(parts[1]));
+                        }
+                        if (endTime != null && endTime.contains(":")) {
+                            String[] parts = endTime.split(":");
+                            tpEnd.setHour(Integer.parseInt(parts[0]));
+                            tpEnd.setMinute(Integer.parseInt(parts[1]));
+                        }
+                        if (slotDur != null) {
+                            if (slotDur.contains("15")) selectSlot(15);
+                            else if (slotDur.contains("60")) selectSlot(60);
+                            else selectSlot(30);
+                        }
+                    }
+                });
+    }
+
+    private void saveAvailability() {
+        if (auth.getCurrentUser() == null) return;
+        String uid = auth.getCurrentUser().getUid();
+
+        String startTime = String.format("%02d:%02d",
+                tpStart.getHour(), tpStart.getMinute());
+        String endTime = String.format("%02d:%02d",
+                tpEnd.getHour(), tpEnd.getMinute());
+        String slotDur = selectedSlotDuration + " min";
+
+        List<String> selectedDays = new ArrayList<>();
+        if ((boolean) dayMon.getTag()) selectedDays.add("Monday");
+        if ((boolean) dayTue.getTag()) selectedDays.add("Tuesday");
+        if ((boolean) dayWed.getTag()) selectedDays.add("Wednesday");
+        if ((boolean) dayThu.getTag()) selectedDays.add("Thursday");
+        if ((boolean) dayFri.getTag()) selectedDays.add("Friday");
+        if ((boolean) daySat.getTag()) selectedDays.add("Saturday");
+        if ((boolean) daySun.getTag()) selectedDays.add("Sunday");
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("startTime", startTime);
+        updates.put("endTime", endTime);
+        updates.put("slotDuration", slotDur);
+        updates.put("workingDays", selectedDays);
+        updates.put("slots", generatedSlots);
+
+        db.collection("users").document(uid)
+                .update(updates)
+                .addOnSuccessListener(a ->
+                        Toast.makeText(this,
+                                "Availability saved! ✅",
+                                Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e ->
+                        Toast.makeText(this,
+                                "Error: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show());
     }
 
     private void setupDayToggle(TextView day, boolean selected) {
@@ -101,55 +179,20 @@ public class AvailabilityActivity extends AppCompatActivity {
         slot60.setBackgroundResource(R.drawable.bg_tag_unselected);
         slot60.setTextColor(0xFF94A3B8);
 
-        TextView selected = minutes == 15 ? slot15 : minutes == 30 ? slot30 : slot60;
+        TextView selected = minutes == 15 ? slot15 :
+                minutes == 30 ? slot30 : slot60;
         selected.setBackgroundResource(R.drawable.bg_day_selected);
         selected.setTextColor(0xFFFFFFFF);
     }
 
     private void generateSlots() {
-        int startHour   = tpStart.getHour();
-        int startMinute = tpStart.getMinute();
-        int endHour     = tpEnd.getHour();
-        int endMinute   = tpEnd.getMinute();
+        generatedSlots.clear();
 
-        List<String> slots = new ArrayList<>();
-        int current = startHour * 60 + startMinute;
-        int end     = endHour * 60 + endMinute;
+        int current = tpStart.getHour() * 60 + tpStart.getMinute();
+        int end = tpEnd.getHour() * 60 + tpEnd.getMinute();
 
         while (current + selectedSlotDuration <= end) {
             int h = current / 60;
-            int m = current % 60;
-            String ampm = h >= 12 ? "PM" : "AM";
-            int displayH = h > 12 ? h - 12 : (h == 0 ? 12 : h);
-            slots.add(String.format("%d:%02d %s", displayH, m, ampm));
-            current += selectedSlotDuration;
         }
-
-        rvSlots.setAdapter(new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-            @Override
-            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                TextView tv = new TextView(parent.getContext());
-                tv.setLayoutParams(new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, 80));
-                tv.setGravity(android.view.Gravity.CENTER);
-                tv.setTextSize(12);
-                tv.setTextColor(0xFF2C6E8A);
-                tv.setBackgroundResource(R.drawable.bg_input_field);
-                tv.setPadding(8, 8, 8, 8);
-                ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, 80);
-                params.setMargins(4, 4, 4, 4);
-                tv.setLayoutParams(params);
-                return new RecyclerView.ViewHolder(tv) {};
-            }
-
-            @Override
-            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                ((TextView) holder.itemView).setText(slots.get(position));
-            }
-
-            @Override
-            public int getItemCount() { return slots.size(); }
-        });
     }
 }

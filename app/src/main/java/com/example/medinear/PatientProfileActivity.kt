@@ -1,5 +1,6 @@
 package com.example.medinear
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -25,6 +26,16 @@ class PatientProfileActivity : ComponentActivity() {
 
         findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
         findViewById<Button>(R.id.btnSave).setOnClickListener { saveProfile() }
+
+        // ✅ Logout button
+        findViewById<Button>(R.id.btnLogout).setOnClickListener {
+            auth.signOut()
+            val intent = Intent(this, RoleSelectionActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun loadProfile() {

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class AppointmentsActivity extends AppCompatActivity {
     private List<Appointment> filteredList = new ArrayList<>();
     private AppointmentAdapter adapter;
     private FirebaseFirestore db;
+    private FirebaseAuth auth; // ✅ Added
 
     private TextView tabAll, tabPending, tabConfirmed, tabRejected;
     private String currentFilter = "All";
@@ -32,17 +34,19 @@ public class AppointmentsActivity extends AppCompatActivity {
 
         findViewById(R.id.tv_back).setOnClickListener(v -> finish());
 
+        auth = FirebaseAuth.getInstance(); // ✅ Added
+        db   = FirebaseFirestore.getInstance();
+
         tabAll       = findViewById(R.id.tab_all);
         tabPending   = findViewById(R.id.tab_pending);
         tabConfirmed = findViewById(R.id.tab_confirmed);
         tabRejected  = findViewById(R.id.tab_rejected);
 
         tabAll.setOnClickListener(v -> applyFilter("All"));
-        tabPending.setOnClickListener(v -> applyFilter("Pending"));
-        tabConfirmed.setOnClickListener(v -> applyFilter("Confirmed"));
-        tabRejected.setOnClickListener(v -> applyFilter("Rejected"));
+        tabPending.setOnClickListener(v -> applyFilter("pending"));
+        tabConfirmed.setOnClickListener(v -> applyFilter("confirmed"));
+        tabRejected.setOnClickListener(v -> applyFilter("cancelled"));
 
-        db = FirebaseFirestore.getInstance();
         rvAppointments = findViewById(R.id.rv_appointments);
         rvAppointments.setLayoutManager(new LinearLayoutManager(this));
 
@@ -56,7 +60,7 @@ public class AppointmentsActivity extends AppCompatActivity {
         currentFilter = filter;
 
         tabAll.setBackgroundResource(R.drawable.bg_tab_unselected);
-        tabAll.setTextColor(0xFF5BA4CF);
+        tabAll.setTextColor(0xFFDBEAFE);
         tabPending.setBackgroundResource(R.drawable.bg_tab_unselected);
         tabPending.setTextColor(0xFFDBEAFE);
         tabConfirmed.setBackgroundResource(R.drawable.bg_tab_unselected);
@@ -69,15 +73,15 @@ public class AppointmentsActivity extends AppCompatActivity {
                 tabAll.setBackgroundResource(R.drawable.bg_tab_selected);
                 tabAll.setTextColor(0xFF5BA4CF);
                 break;
-            case "Pending":
+            case "pending":
                 tabPending.setBackgroundResource(R.drawable.bg_tab_selected);
                 tabPending.setTextColor(0xFF5BA4CF);
                 break;
-            case "Confirmed":
+            case "confirmed":
                 tabConfirmed.setBackgroundResource(R.drawable.bg_tab_selected);
                 tabConfirmed.setTextColor(0xFF5BA4CF);
                 break;
-            case "Rejected":
+            case "cancelled":
                 tabRejected.setBackgroundResource(R.drawable.bg_tab_selected);
                 tabRejected.setTextColor(0xFF5BA4CF);
                 break;
@@ -88,7 +92,8 @@ public class AppointmentsActivity extends AppCompatActivity {
             filteredList.addAll(appointmentList);
         } else {
             for (Appointment apt : appointmentList) {
-                if (apt.status != null && apt.status.equals(filter)) {
+                // ✅ case-insensitive comparison
+                if (apt.status != null && apt.status.equalsIgnoreCase(filter)) {
                     filteredList.add(apt);
                 }
             }
@@ -97,32 +102,30 @@ public class AppointmentsActivity extends AppCompatActivity {
     }
 
     private void loadAppointments() {
+        // ✅ Get logged-in doctor's UID
+        String doctorUid = auth.getCurrentUser() != null
+                ? auth.getCurrentUser().getUid() : null;
+
+        if (doctorUid == null) return;
+
+        // ✅ Filter by doctorUid
         db.collection("apointments")
+                .whereEqualTo("doctorUid", doctorUid)
                 .get()
                 .addOnSuccessListener(result -> {
                     appointmentList.clear();
                     for (QueryDocumentSnapshot doc : result) {
-                        int age = 0;
-                        try {
-                            if (doc.getLong("Age") != null) {
-                                age = doc.getLong("Age").intValue();
-                            } else if (doc.getString("Age") != null) {
-                                age = Integer.parseInt(doc.getString("Age"));
-                            }
-                        } catch (Exception e) {
-                            age = 0;
-                        }
 
                         Appointment apt = new Appointment(
                                 doc.getId(),
-                                doc.getString("Name"),
-                                doc.getString("Reason"),
-                                doc.getString("Date"),
-                                doc.getString("Time"),
-                                doc.getString("Phone"),
-                                age,
-                                doc.getString("Gender"),
-                                doc.getString("Status")
+                                doc.getString("doctorName"),  // ✅ real field names
+                                doc.getString("note"),
+                                doc.getString("date"),
+                                doc.getString("timeSlot"),
+                                "",                           // phone not saved yet
+                                0,                            // age not saved yet
+                                "",                           // gender not saved yet
+                                doc.getString("status")
                         );
                         appointmentList.add(apt);
                     }
@@ -176,18 +179,10 @@ public class AppointmentsActivity extends AppCompatActivity {
             holder.tvTime.setText(apt.time);
             holder.tvStatus.setText(apt.status);
 
-            // First letter avatar with unique color
             int[] colors = {
-                    0xFF1A56DB, // blue
-                    0xFF16A34A, // green
-                    0xFFDC2626, // red
-                    0xFF9333EA, // purple
-                    0xFFEA580C, // orange
-                    0xFF0891B2, // cyan
-                    0xFFDB2777, // pink
-                    0xFF65A30D, // lime
-                    0xFFD97706, // amber
-                    0xFF0284C7  // sky blue
+                    0xFF1A56DB, 0xFF16A34A, 0xFFDC2626, 0xFF9333EA,
+                    0xFFEA580C, 0xFF0891B2, 0xFFDB2777, 0xFF65A30D,
+                    0xFFD97706, 0xFF0284C7
             };
 
             if (apt.name != null && !apt.name.isEmpty()) {
@@ -203,12 +198,13 @@ public class AppointmentsActivity extends AppCompatActivity {
                 );
             }
 
+            // ✅ lowercase status comparison
             switch (apt.status != null ? apt.status : "") {
-                case "Confirmed":
+                case "confirmed":
                     holder.tvStatus.setBackgroundResource(R.drawable.bg_tag_green);
                     holder.tvStatus.setTextColor(0xFF16A34A);
                     break;
-                case "Rejected":
+                case "cancelled":
                     holder.tvStatus.setBackgroundResource(R.drawable.bg_tag_red);
                     holder.tvStatus.setTextColor(0xFFDC2626);
                     break;

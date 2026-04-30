@@ -62,6 +62,9 @@ class PatientStep3Activity : AppCompatActivity() {
         val phone     = intent.getStringExtra("phone")     ?: ""
         val email     = intent.getStringExtra("email")     ?: ""
         val city      = intent.getStringExtra("city")      ?: ""
+        android.util.Log.d("REGISTER", "Email: '$email'")
+        android.util.Log.d("REGISTER", "FirstName: '$firstName'")
+        android.util.Log.d("REGISTER", "Password length: ${password.length}")
 
         auth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener { result ->
