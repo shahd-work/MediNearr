@@ -14,9 +14,8 @@
         android:label="MediNear"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        android:theme="@style/Theme.Medinear">
 
-        <!-- ✅ YOUR STARTING SCREEN -->
         <activity
             android:name=".RoleSelectionActivity"
             android:exported="true">
@@ -25,7 +24,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
 
         <activity android:name=".LoginActivity"/>
         <activity android:name=".PatientStep1Activity"/>
@@ -40,17 +38,12 @@
         <activity android:name=".DoctorHomeActivity"/>
         <activity android:name=".BookAppointmentActivity"/>
         <activity android:name=".MyAppointmentsActivity"/>
-
-        <!-- SHARED -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"/>
-
-        <!-- YOUR FRIEND'S ACTIVITIES -->
         <activity android:name=".AppointmentsActivity"/>
+        <activity android:name=".AppointmentSuccessActivity"/>
         <activity android:name=".AppointmentDetailActivity"/>
         <activity android:name=".DoctorProfileActivity"/>
         <activity android:name=".AvailabilityActivity"/>
+        <activity android:name=".MainActivity"/>
 
     </application>
 

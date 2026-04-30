@@ -54,7 +54,7 @@ class BookAppointmentActivity : ComponentActivity() {
         auth = FirebaseAuth.getInstance()
         db   = FirebaseFirestore.getInstance()
 
-        doctorId   = intent.getStringExtra("doctorId")   ?: ""
+        doctorId   = intent.getStringExtra("doctorUid")   ?: ""
         doctorName = intent.getStringExtra("doctorName") ?: ""
         doctorSpec = intent.getStringExtra("doctorSpec") ?: ""
         doctorFee  = intent.getStringExtra("doctorFee")  ?: ""
@@ -193,7 +193,7 @@ class BookAppointmentActivity : ComponentActivity() {
         val dateStr = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay)
         tvSlotsTitle.text = "Time slots for $dateStr"
 
-        db.collection("appointments")
+        db.collection("apointments")
             .whereEqualTo("doctorId", doctorId)
             .whereEqualTo("date", dateStr)
             .whereIn("status", listOf("pending", "confirmed"))
@@ -257,8 +257,8 @@ class BookAppointmentActivity : ComponentActivity() {
         val dateStr = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay)
 
         val appointment = hashMapOf(
-            "patientId"  to uid,
-            "doctorId"   to doctorId,
+            "patientUid"  to uid,
+            "doctorUid"   to doctorId,
             "doctorName" to doctorName,
             "date"       to dateStr,
             "timeSlot"   to selectedSlot,
@@ -267,7 +267,7 @@ class BookAppointmentActivity : ComponentActivity() {
             "createdAt"  to System.currentTimeMillis()
         )
 
-        db.collection("appointments").add(appointment)
+        db.collection("apointments").add(appointment)
             .addOnSuccessListener {
                 val intent = Intent(this, AppointmentSuccessActivity::class.java)
                 intent.putExtra("doctorName", doctorName)

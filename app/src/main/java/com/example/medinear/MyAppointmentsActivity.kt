@@ -54,6 +54,7 @@ class MyAppointmentsActivity : ComponentActivity() {
         val fmt = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
         tvMonthTitle.text = fmt.format(currentMonth.time)
 
+        // Get start and end date of current month
         val startCal = currentMonth.clone() as Calendar
         startCal.set(Calendar.DAY_OF_MONTH, 1)
         val endCal = currentMonth.clone() as Calendar
@@ -61,15 +62,17 @@ class MyAppointmentsActivity : ComponentActivity() {
 
         val dateFmt = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val startDate = dateFmt.format(startCal.time)
-        val endDate = dateFmt.format(endCal.time)
+        val endDate   = dateFmt.format(endCal.time)
 
-        db.collection("appointments")
+        android.util.Log.d("APPTS", "Filtering from $startDate to $endDate")
+
+        db.collection("apointments")
             .whereEqualTo("patientUid", uid)
             .whereGreaterThanOrEqualTo("date", startDate)
             .whereLessThanOrEqualTo("date", endDate)
-            .orderBy("date", Query.Direction.ASCENDING)
             .get()
             .addOnSuccessListener { result ->
+                android.util.Log.d("APPTS", "Found: ${result.size()}")
                 appointmentsList.removeAllViews()
 
                 if (result.isEmpty) {
@@ -82,19 +85,19 @@ class MyAppointmentsActivity : ComponentActivity() {
                 appointmentsList.visibility = View.VISIBLE
 
                 for (doc in result) {
-                    val date = doc.getString("date") ?: ""
-                    val timeSlot = doc.getString("timeSlot") ?: ""
-                    val doctorName = doc.getString("doctorName") ?: ""
-                    val doctorSpec = doc.getString("doctorSpec") ?: ""
-                    val status = doc.getString("status") ?: "pending"
+                    val date         = doc.getString("date")        ?: ""
+                    val timeSlot     = doc.getString("timeSlot")    ?: ""
+                    val doctorName   = doc.getString("doctorName")  ?: ""
+                    val doctorSpec   = doc.getString("doctorSpec")  ?: ""
+                    val status       = doc.getString("status")      ?: "pending"
                     val doctorClinic = doc.getString("doctorClinic") ?: ""
-                    val appointmentId = doc.getString("appointmentId") ?: doc.id
+                    val appointmentId = doc.id
 
                     addAppointmentCard(date, timeSlot, doctorName, doctorSpec, status, doctorClinic, appointmentId)
                 }
             }
-            .addOnFailureListener {
-                appointmentsList.removeAllViews()
+            .addOnFailureListener { e ->
+                android.util.Log.e("APPTS", "Error: ${e.message}")
                 tvEmpty.visibility = View.VISIBLE
                 appointmentsList.visibility = View.GONE
             }
@@ -243,7 +246,7 @@ class MyAppointmentsActivity : ComponentActivity() {
             cancelLp.topMargin = 12
             btnCancel.layoutParams = cancelLp
             btnCancel.setOnClickListener {
-                db.collection("appointments").document(appointmentId)
+                db.collection("apointments").document(appointmentId)
                     .update("status", "cancelled")
                     .addOnSuccessListener {
                         loadAppointments()

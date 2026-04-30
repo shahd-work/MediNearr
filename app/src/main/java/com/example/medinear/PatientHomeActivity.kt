@@ -113,6 +113,14 @@ class PatientHomeActivity : ComponentActivity() {
                         slotDuration   = slotDur
                     ))
                 }
+
+                // ✅ Show all doctors by default
+                if (activeSpec == "All") showResults(allDoctors, "All Doctors")
+                else filterBySpec(activeSpec)
+
+            }
+            .addOnFailureListener { e ->
+                android.util.Log.e("DOCTORS", "FAILED: ${e.message}")
             }
     }
 
@@ -121,7 +129,7 @@ class PatientHomeActivity : ComponentActivity() {
             override fun afterTextChanged(s: Editable?) {
                 val q = s.toString().trim()
                 if (q.isEmpty()) {
-                    if (activeSpec == "All") showEmpty()
+                    if (activeSpec == "All") showResults(allDoctors, "All Doctors") // ✅
                     else filterBySpec(activeSpec)
                 } else {
                     searchDoctors(q)
@@ -157,7 +165,8 @@ class PatientHomeActivity : ComponentActivity() {
             chip.setOnClickListener {
                 activeSpec = spec
                 updateChips(chip)
-                if (spec == "All") showEmpty()
+                // ✅ "All" chip shows all doctors instead of empty
+                if (spec == "All") showResults(allDoctors, "All Doctors")
                 else filterBySpec(spec)
             }
             chipRow.addView(chip)
