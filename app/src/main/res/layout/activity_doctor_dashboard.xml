@@ -44,11 +44,13 @@
                         android:id="@+id/tv_doctor_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text=""
                         android:textColor="#FFFFFF"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
+
                 <ImageView
                     android:id="@+id/iv_notification"
                     android:layout_width="42dp"
@@ -76,6 +78,7 @@
                 android:id="@+id/tv_today_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text=""
                 android:textColor="#DBEAFE"
                 android:textSize="13sp"
                 android:layout_marginTop="6dp" />
@@ -107,7 +110,7 @@
                     android:id="@+id/tv_patient_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="8"
+                    android:text="0"
                     android:textColor="#FFFFFF"
                     android:textSize="32sp"
                     android:textStyle="bold" />
@@ -136,7 +139,7 @@
                     android:id="@+id/tv_new_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3"
+                    android:text="0"
                     android:textColor="#FFFFFF"
                     android:textSize="32sp"
                     android:textStyle="bold" />
@@ -164,7 +167,7 @@
                     android:id="@+id/tv_pending_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2"
+                    android:text="0"
                     android:textColor="#FFFFFF"
                     android:textSize="32sp"
                     android:textStyle="bold" />
@@ -200,10 +203,11 @@
                 android:layout_marginBottom="14dp">
 
                 <TextView
+                    android:id="@+id/tv_cal_month"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="📅  April 2026"
+                    android:text=""
                     android:textColor="#2C6E8A"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -231,59 +235,18 @@
 
             </LinearLayout>
 
+            <!-- Calendar days row -->
             <LinearLayout
+                android:id="@+id/calendarRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"/>
 
-                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:padding="6dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="M" android:textColor="#94A3B8" android:textSize="11sp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="31" android:textColor="#64748B" android:textSize="14sp" android:textStyle="bold"/>
-                </LinearLayout>
-
-                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:padding="6dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="T" android:textColor="#94A3B8" android:textSize="11sp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textColor="#64748B" android:textSize="14sp" android:textStyle="bold"/>
-                </LinearLayout>
-
-                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:padding="6dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="W" android:textColor="#94A3B8" android:textSize="11sp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="#64748B" android:textSize="14sp" android:textStyle="bold"/>
-                </LinearLayout>
-
-                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:padding="6dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="T" android:textColor="#94A3B8" android:textSize="11sp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textColor="#64748B" android:textSize="14sp" android:textStyle="bold"/>
-                </LinearLayout>
-
-                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:orientation="vertical" android:gravity="center"
-                    android:background="@drawable/bg_day_selected" android:padding="6dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="F" android:textColor="#DBEAFE" android:textSize="11sp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="4" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold"/>
-                </LinearLayout>
-
-                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:padding="6dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="S" android:textColor="#94A3B8" android:textSize="11sp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="5" android:textColor="#64748B" android:textSize="14sp" android:textStyle="bold"/>
-                </LinearLayout>
-
-                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:padding="6dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="S" android:textColor="#94A3B8" android:textSize="11sp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="6" android:textColor="#64748B" android:textSize="14sp" android:textStyle="bold"/>
-                </LinearLayout>
-
-            </LinearLayout>
         </LinearLayout>
 
         <!-- ===== NEW PATIENT ALERT ===== -->
         <LinearLayout
+            android:id="@+id/layoutNewRequest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -292,7 +255,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="16dp"
-            android:padding="14dp">
+            android:padding="14dp"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -316,9 +280,10 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tv_new_request_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sara Meziane is waiting for approval"
+                    android:text=""
                     android:textColor="#166534"
                     android:textSize="12sp" />
 
@@ -376,194 +341,12 @@
 
             </LinearLayout>
 
-            <!-- ===== APPOINTMENT ITEM 1: Karim ===== -->
+            <!-- Dynamic appointments list -->
             <LinearLayout
-                android:id="@+id/appointment_item_1"
+                android:id="@+id/appointmentsList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="@drawable/bg_white_card"
-                android:padding="14dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_marginBottom="10dp">
-
-                <TextView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:gravity="center"
-                    android:text="K"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:background="@drawable/bg_avatar_circle"
-                    android:backgroundTint="#5BA4CF"
-                    android:layout_marginEnd="12dp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Karim Boudiaf"
-                        android:textColor="#1E293B"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tooth pain · 09:00 AM"
-                        android:textColor="#64748B"
-                        android:textSize="12sp" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Confirmed"
-                    android:textColor="#16A34A"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:background="@drawable/bg_tag_green"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingTop="3dp"
-                    android:paddingBottom="3dp" />
-
-            </LinearLayout>
-
-            <!-- ===== APPOINTMENT ITEM 2: Sara ===== -->
-            <LinearLayout
-                android:id="@+id/appointment_item_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="@drawable/bg_white_card"
-                android:padding="14dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_marginBottom="10dp">
-
-                <TextView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:gravity="center"
-                    android:text="S"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:background="@drawable/bg_avatar_circle"
-                    android:backgroundTint="#9333EA"
-                    android:layout_marginEnd="12dp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sara Meziane"
-                        android:textColor="#1E293B"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Eye check-up · 10:30 AM"
-                        android:textColor="#64748B"
-                        android:textSize="12sp" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="New"
-                    android:textColor="#EA580C"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:background="@drawable/bg_tag_orange"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingTop="3dp"
-                    android:paddingBottom="3dp" />
-
-            </LinearLayout>
-
-            <!-- ===== APPOINTMENT ITEM 3: Omar ===== -->
-            <LinearLayout
-                android:id="@+id/appointment_item_3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="@drawable/bg_white_card"
-                android:padding="14dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_marginBottom="10dp">
-
-                <TextView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:gravity="center"
-                    android:text="O"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:background="@drawable/bg_avatar_circle"
-                    android:backgroundTint="#0891B2"
-                    android:layout_marginEnd="12dp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Omar Hadj Ali"
-                        android:textColor="#1E293B"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Follow-up · 02:00 PM"
-                        android:textColor="#64748B"
-                        android:textSize="12sp" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Confirmed"
-                    android:textColor="#16A34A"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:background="@drawable/bg_tag_green"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingTop="3dp"
-                    android:paddingBottom="3dp" />
-
-            </LinearLayout>
+                android:orientation="vertical"/>
 
         </LinearLayout>
 

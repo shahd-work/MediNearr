@@ -1,7 +1,10 @@
 package com.example.medinear
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -9,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -16,19 +20,20 @@ class DoctorHomeActivity : AppCompatActivity() {
 
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
+    private var calendarOffset = 0 // weeks offset from today
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_doctor_dashboard)
 
-        db = FirebaseFirestore.getInstance()
+        db   = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
         // ✅ Set today's real date
         val dateFormat = SimpleDateFormat("EEEE, MMMM dd · yyyy", Locale.ENGLISH)
         findViewById<TextView>(R.id.tv_today_date).text = dateFormat.format(Date())
 
-        // ✅ Load doctor's real name from Firebase
+        // ✅ Load doctor's real name
         val uid = auth.currentUser?.uid
         if (uid != null) {
             db.collection("users").document(uid).get()
@@ -37,6 +42,19 @@ class DoctorHomeActivity : AppCompatActivity() {
                     val lastName  = doc.getString("lastName")  ?: ""
                     findViewById<TextView>(R.id.tv_doctor_name).text = "Dr. $firstName $lastName"
                 }
+        }
+
+        // ✅ Build calendar
+        renderCalendar()
+
+        // Calendar navigation
+        findViewById<TextView>(R.id.tv_prev_week).setOnClickListener {
+            calendarOffset--
+            renderCalendar()
+        }
+        findViewById<TextView>(R.id.tv_next_week).setOnClickListener {
+            calendarOffset++
+            renderCalendar()
         }
 
         // Navigation
@@ -50,81 +68,217 @@ class DoctorHomeActivity : AppCompatActivity() {
             startActivity(Intent(this, AvailabilityActivity::class.java))
         }
 
-        // ✅ Load real appointments
         loadDashboardAppointments()
     }
 
-    private fun loadDashboardAppointments() {
-        db.collection("apointments").get()
-            .addOnSuccessListener { result ->
-                var total   = 0
-                var pending = 0
-                var newP    = 0
+    private fun renderCalendar() {
+        val cal = Calendar.getInstance()
+        cal.add(Calendar.WEEK_OF_YEAR, calendarOffset)
 
-                // ✅ Get today's date string to filter today's appointments
-                val todayFormat = SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
-                val today = todayFormat.format(Date())
+        // Go to start of week (Monday)
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+
+        val monthNames = listOf("January","February","March","April","May","June",
+            "July","August","September","October","November","December")
+        val monthTitle = "📅  ${monthNames[cal.get(Calendar.MONTH)]} ${cal.get(Calendar.YEAR)}"
+        findViewById<TextView>(R.id.tv_cal_month).text = monthTitle
+
+        val today = Calendar.getInstance()
+        val dayNames = listOf("M","T","W","T","F","S","S")
+        val calendarRow = findViewById<LinearLayout>(R.id.calendarRow)
+        calendarRow.removeAllViews()
+
+        for (i in 0..6) {
+            val dayNum  = cal.get(Calendar.DAY_OF_MONTH)
+            val isToday = cal.get(Calendar.DAY_OF_MONTH) == today.get(Calendar.DAY_OF_MONTH) &&
+                    cal.get(Calendar.MONTH) == today.get(Calendar.MONTH) &&
+                    cal.get(Calendar.YEAR)  == today.get(Calendar.YEAR)
+
+            val container = LinearLayout(this)
+            container.orientation = LinearLayout.VERTICAL
+            container.gravity = Gravity.CENTER
+            container.setPadding(6, 6, 6, 6)
+            val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            container.layoutParams = lp
+
+            if (isToday) {
+                container.setBackgroundResource(R.drawable.bg_day_selected)
+            }
+
+            val tvDayName = TextView(this)
+            tvDayName.text = dayNames[i]
+            tvDayName.textSize = 11f
+            tvDayName.gravity = Gravity.CENTER
+            tvDayName.setTextColor(if (isToday) Color.parseColor("#DBEAFE") else Color.parseColor("#94A3B8"))
+
+            val tvDayNum = TextView(this)
+            tvDayNum.text = dayNum.toString()
+            tvDayNum.textSize = 14f
+            tvDayNum.gravity = Gravity.CENTER
+            tvDayNum.setTextColor(if (isToday) Color.WHITE else Color.parseColor("#64748B"))
+
+            container.addView(tvDayName)
+            container.addView(tvDayNum)
+            calendarRow.addView(container)
+
+            cal.add(Calendar.DAY_OF_MONTH, 1)
+        }
+    }
+
+    private fun loadDashboardAppointments() {
+        val uid = auth.currentUser?.uid ?: return
+
+        val todayFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+        val today = todayFormat.format(Date())
+
+        db.collection("apointments")
+            .whereEqualTo("doctorUid", uid)
+            .get()
+            .addOnSuccessListener { result ->
+                var total     = 0
+                var pending   = 0
+                var confirmed = 0
+                var firstPendingId   = ""
+                var firstPendingName = ""
+
+                val todayDocs = mutableListOf<com.google.firebase.firestore.DocumentSnapshot>()
 
                 for (doc in result) {
-                    val status = doc.getString("Status") ?: ""
-                    val date   = doc.getString("Date")   ?: ""
+                    val status = doc.getString("status") ?: ""
+                    val date   = doc.getString("date")   ?: ""
 
-                    // Only count today's appointments
                     if (date == today) {
                         total++
-                        if (status == "Pending")   pending++
-                        if (status == "New")       newP++
+                        todayDocs.add(doc)
+                        if (status == "pending") {
+                            pending++
+                            if (firstPendingId.isEmpty()) {
+                                firstPendingId   = doc.id
+                                firstPendingName = doc.getString("patientName") ?: "A patient"
+                            }
+                        }
+                        if (status == "confirmed") confirmed++
                     }
                 }
 
+                // ✅ Update counts
                 findViewById<TextView>(R.id.tv_patient_count).text = total.toString()
                 findViewById<TextView>(R.id.tv_pending_count).text = pending.toString()
-                findViewById<TextView>(R.id.tv_new_count).text     = newP.toString()
+                findViewById<TextView>(R.id.tv_new_count).text     = confirmed.toString()
 
-                // ✅ Load first 3 real appointments into the cards
-                val docs = result.documents.take(3)
-                val itemIds = listOf(
-                    R.id.appointment_item_1,
-                    R.id.appointment_item_2,
-                    R.id.appointment_item_3
-                )
+                // ✅ Show new patient alert if there's a pending appointment
+                val layoutAlert = findViewById<LinearLayout>(R.id.layoutNewRequest)
+                if (pending > 0) {
+                    layoutAlert.visibility = View.VISIBLE
+                    findViewById<TextView>(R.id.tv_new_request_name).text =
+                        "$firstPendingName is waiting for approval"
+                    // ✅ View button opens AppointmentsActivity
+                    findViewById<TextView>(R.id.tv_view_request).setOnClickListener {
+                        startActivity(Intent(this, AppointmentsActivity::class.java))
+                    }
+                } else {
+                    layoutAlert.visibility = View.GONE
+                }
 
-                for (i in docs.indices) {
-                    val doc  = docs[i]
-                    val name   = doc.getString("Name")   ?: "Unknown"
-                    val reason = doc.getString("Reason") ?: ""
-                    val time   = doc.getString("Time")   ?: ""
-                    val status = doc.getString("Status") ?: ""
+                // ✅ Load today's appointments dynamically
+                val appointmentsList = findViewById<LinearLayout>(R.id.appointmentsList)
+                appointmentsList.removeAllViews()
 
-                    val item = findViewById<LinearLayout>(itemIds[i])
+                if (todayDocs.isEmpty()) {
+                    val tv = TextView(this)
+                    tv.text = "No appointments today"
+                    tv.textSize = 13f
+                    tv.setTextColor(Color.parseColor("#AAAAAA"))
+                    tv.gravity = Gravity.CENTER
+                    tv.setPadding(0, 32, 0, 32)
+                    appointmentsList.addView(tv)
+                    return@addOnSuccessListener
+                }
 
-                    // Set name
-                    item.findViewById<TextView>(
-                        resources.getIdentifier("tv_name_$i", "id", packageName)
-                    )
+                for (doc in todayDocs.take(3)) {
+                    val patientName = doc.getString("patientName") ?: "Unknown"
+                    val note        = doc.getString("note")        ?: ""
+                    val timeSlot    = doc.getString("timeSlot")    ?: ""
+                    val status      = doc.getString("status")      ?: ""
+                    val initial     = patientName.firstOrNull()?.toString() ?: "?"
 
-                    // Find TextViews inside each appointment card
-                    val textViews = ArrayList<TextView>()
-                    for (j in 0 until item.childCount) {
-                        val child = item.getChildAt(j)
-                        if (child is LinearLayout) {
-                            for (k in 0 until child.childCount) {
-                                val v = child.getChildAt(k)
-                                if (v is TextView) textViews.add(v)
-                            }
-                        } else if (child is TextView) {
-                            textViews.add(child)
+                    // Card
+                    val card = LinearLayout(this)
+                    card.orientation = LinearLayout.HORIZONTAL
+                    card.gravity = Gravity.CENTER_VERTICAL
+                    card.setBackgroundResource(R.drawable.bg_white_card)
+                    card.setPadding(14, 14, 14, 14)
+                    val lp = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT)
+                    lp.bottomMargin = 10
+                    card.layoutParams = lp
+                    card.isClickable = true
+                    card.setOnClickListener {
+                        startActivity(Intent(this, AppointmentsActivity::class.java))
+                    }
+
+                    // Avatar
+                    val avatar = TextView(this)
+                    avatar.text = initial
+                    avatar.textSize = 20f
+                    avatar.setTextColor(Color.WHITE)
+                    avatar.gravity = Gravity.CENTER
+                    avatar.setBackgroundResource(R.drawable.bg_avatar_circle)
+                    val avLp = LinearLayout.LayoutParams(48.dp, 48.dp)
+                    avLp.marginEnd = 12
+                    avatar.layoutParams = avLp
+
+                    // Info
+                    val info = LinearLayout(this)
+                    info.orientation = LinearLayout.VERTICAL
+                    info.layoutParams = LinearLayout.LayoutParams(0,
+                        LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+
+                    val tvName = TextView(this)
+                    tvName.text = patientName
+                    tvName.textSize = 14f
+                    tvName.setTextColor(Color.parseColor("#1E293B"))
+
+                    val tvDetail = TextView(this)
+                    tvDetail.text = if (note.isNotEmpty()) "$note · $timeSlot" else timeSlot
+                    tvDetail.textSize = 12f
+                    tvDetail.setTextColor(Color.parseColor("#64748B"))
+
+                    info.addView(tvName)
+                    info.addView(tvDetail)
+
+                    // Status badge
+                    val badge = TextView(this)
+                    badge.text = status.replaceFirstChar { it.uppercase() }
+                    badge.textSize = 11f
+                    when (status) {
+                        "confirmed" -> {
+                            badge.setTextColor(Color.parseColor("#16A34A"))
+                            badge.setBackgroundResource(R.drawable.bg_tag_green)
+                        }
+                        "cancelled" -> {
+                            badge.setTextColor(Color.parseColor("#DC2626"))
+                            badge.setBackgroundResource(R.drawable.bg_tag_red)
+                        }
+                        else -> {
+                            badge.setTextColor(Color.parseColor("#EA580C"))
+                            badge.setBackgroundResource(R.drawable.bg_tag_orange)
                         }
                     }
+                    badge.setPadding(8, 3, 8, 3)
 
-                    // textViews: [0]=avatar letter, [1]=name, [2]=reason·time, [3]=status tag
-                    if (textViews.size >= 4) {
-                        textViews[0].text = name.firstOrNull()?.toString() ?: "?"
-                        textViews[1].text = name
-                        textViews[2].text = "$reason · $time"
-                        textViews[3].text = status
-                    }
+                    card.addView(avatar)
+                    card.addView(info)
+                    card.addView(badge)
+                    appointmentsList.addView(card)
                 }
             }
+            .addOnFailureListener { e ->
+                android.util.Log.e("DASHBOARD", "Error: ${e.message}")
+            }
     }
+
+    private val Int.dp: Int
+        get() = (this * resources.displayMetrics.density).toInt()
 }
