@@ -86,25 +86,36 @@ public class DoctorProfileActivity extends AppCompatActivity {
                 ? auth.getCurrentUser().getUid() : null;
         if (uid == null) return;
 
+        String fullName  = etName.getText().toString().trim();
         String phone     = etPhone.getText().toString().trim();
         String specialty = etSpecialty.getText().toString().trim();
+        String license   = etLicense.getText().toString().trim();
 
-        if (phone.isEmpty()) {
-            Toast.makeText(this, "Please enter your phone", Toast.LENGTH_SHORT).show();
+        if (fullName.isEmpty()) {
+            Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // ✅ Save to users collection with lowercase field names
+        // ✅ Split name into first and last
+        String[] parts    = fullName.split(" ");
+        String firstName  = parts.length > 0 ? parts[0] : "";
+        String lastName   = parts.length > 1 ? fullName.substring(firstName.length()).trim() : "";
+
         Map<String, Object> updates = new HashMap<>();
+        updates.put("firstName",      firstName);
+        updates.put("lastName",       lastName);
         updates.put("phone",          phone);
         updates.put("specialization", specialty);
+        updates.put("license",        license);
 
         db.collection("users").document(uid)
                 .update(updates)
                 .addOnSuccessListener(aVoid -> {
+                    // ✅ Update UI immediately
+                    tvProfileName.setText("Dr. " + fullName);
+                    tvProfileSpecialty.setText(specialty);
                     Toast.makeText(this, "Profile saved! ✅",
                             Toast.LENGTH_SHORT).show();
-                    tvProfileSpecialty.setText(specialty);
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Failed: " + e.getMessage(),

@@ -108,6 +108,17 @@ public class AvailabilityActivity extends AppCompatActivity {
                             else if (slotDur.contains("60")) selectSlot(60);
                             else selectSlot(30);
                         }
+                        // ✅ Load saved working days
+                        List<String> savedDays = (List<String>) doc.get("workingDays");
+                        if (savedDays != null) {
+                            setupDayToggle(dayMon, savedDays.contains("Monday"));
+                            setupDayToggle(dayTue, savedDays.contains("Tuesday"));
+                            setupDayToggle(dayWed, savedDays.contains("Wednesday"));
+                            setupDayToggle(dayThu, savedDays.contains("Thursday"));
+                            setupDayToggle(dayFri, savedDays.contains("Friday"));
+                            setupDayToggle(daySat, savedDays.contains("Saturday"));
+                            setupDayToggle(daySun, savedDays.contains("Sunday"));
+                        }
                     }
                 });
     }
@@ -189,10 +200,62 @@ public class AvailabilityActivity extends AppCompatActivity {
         generatedSlots.clear();
 
         int current = tpStart.getHour() * 60 + tpStart.getMinute();
-        int end = tpEnd.getHour() * 60 + tpEnd.getMinute();
+        int end     = tpEnd.getHour()   * 60 + tpEnd.getMinute();
 
         while (current + selectedSlotDuration <= end) {
-            int h = current / 60;
+            int h        = current / 60;
+            int m        = current % 60;
+            String ampm  = h >= 12 ? "PM" : "AM";
+            int displayH = h > 12 ? h - 12 : (h == 0 ? 12 : h);
+            generatedSlots.add(String.format("%d:%02d %s", displayH, m, ampm));
+            current += selectedSlotDuration;
         }
+
+        // ✅ Also load saved days from Firebase and update UI
+        if (auth.getCurrentUser() != null) {
+            String uid = auth.getCurrentUser().getUid();
+            db.collection("users").document(uid).get()
+                    .addOnSuccessListener(doc -> {
+                        List<String> savedDays = (List<String>) doc.get("workingDays");
+                        if (savedDays != null) {
+                            setupDayToggle(dayMon, savedDays.contains("Monday"));
+                            setupDayToggle(dayTue, savedDays.contains("Tuesday"));
+                            setupDayToggle(dayWed, savedDays.contains("Wednesday"));
+                            setupDayToggle(dayThu, savedDays.contains("Thursday"));
+                            setupDayToggle(dayFri, savedDays.contains("Friday"));
+                            setupDayToggle(daySat, savedDays.contains("Saturday"));
+                            setupDayToggle(daySun, savedDays.contains("Sunday"));
+                        }
+                    });
+        }
+
+        rvSlots.setAdapter(new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                TextView tv = new TextView(parent.getContext());
+                tv.setGravity(android.view.Gravity.CENTER);
+                tv.setTextSize(12);
+                tv.setTextColor(0xFF2C6E8A);
+                tv.setBackgroundResource(R.drawable.bg_input_field);
+                tv.setPadding(8, 8, 8, 8);
+                ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, 80);
+                params.setMargins(4, 4, 4, 4);
+                tv.setLayoutParams(params);
+                return new RecyclerView.ViewHolder(tv) {};
+            }
+
+            @Override
+            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+                ((TextView) holder.itemView).setText(generatedSlots.get(position));
+            }
+
+            @Override
+            public int getItemCount() { return generatedSlots.size(); }
+        });
+
+        Toast.makeText(this,
+                generatedSlots.size() + " slots generated! Don't forget to save ✅",
+                Toast.LENGTH_SHORT).show();
     }
 }

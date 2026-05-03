@@ -27,7 +27,6 @@ class PatientProfileActivity : ComponentActivity() {
         findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
         findViewById<Button>(R.id.btnSave).setOnClickListener { saveProfile() }
 
-        // ✅ Logout button
         findViewById<Button>(R.id.btnLogout).setOnClickListener {
             auth.signOut()
             val intent = Intent(this, RoleSelectionActivity::class.java)
@@ -57,18 +56,36 @@ class PatientProfileActivity : ComponentActivity() {
     }
 
     private fun saveProfile() {
-        val uid   = auth.currentUser?.uid ?: return
-        val phone = findViewById<EditText>(R.id.etPhone).text.toString().trim()
-        val city  = findViewById<EditText>(R.id.etCity).text.toString().trim()
+        val uid      = auth.currentUser?.uid ?: return
+        val fullName = findViewById<EditText>(R.id.etUsername).text.toString().trim()
+        val phone    = findViewById<EditText>(R.id.etPhone).text.toString().trim()
+        val city     = findViewById<EditText>(R.id.etCity).text.toString().trim()
+        val dob      = findViewById<EditText>(R.id.etDob).text.toString().trim()
+        val blood    = findViewById<EditText>(R.id.etBlood).text.toString().trim()
+
+        // ✅ Split full name into first and last
+        val nameParts = fullName.split(" ")
+        val firstName = nameParts.firstOrNull() ?: ""
+        val lastName  = nameParts.drop(1).joinToString(" ")
 
         db.collection("users").document(uid)
-            .update(mapOf("phone" to phone, "city" to city))
+            .update(mapOf(
+                "firstName" to firstName,
+                "lastName"  to lastName,
+                "phone"     to phone,
+                "city"      to city,
+                "dob"       to dob,
+                "bloodType" to blood
+            ))
             .addOnSuccessListener {
-                Toast.makeText(this, "Profile updated!", Toast.LENGTH_SHORT).show()
-                finish()
+                // ✅ Update UI immediately
+                findViewById<TextView>(R.id.tvProfileName).text = fullName
+                val initials = "${firstName.firstOrNull() ?: ""}${lastName.firstOrNull() ?: ""}".uppercase()
+                findViewById<TextView>(R.id.tvProfileAvatar).text = initials
+                Toast.makeText(this, "Profile updated! ✅", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Error saving profile", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 }
